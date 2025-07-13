@@ -1,0 +1,265 @@
+/* Custom styles for APTS Quiz */
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: opacity, transform;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Remove transitions for layout changes */
+.question-page {
+  transition: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9333ea;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7c3aed;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Apply animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Question transitions */
+.question-item {
+  animation: fadeIn 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.question-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.question-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.question-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.question-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.question-item:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+/* Likert scale hover effects */
+.likert-option > div {
+  transition: all 0.2s ease;
+}
+
+.likert-option:hover > div {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Selected state for Likert options */
+.likert-option input:checked + div {
+  background-color: rgb(243 232 255);
+  border-color: rgb(147 51 234);
+  transform: scale(1.05);
+}
+
+/* Progress bar animation */
+#progress-bar {
+  transition: width 0.5s ease-out;
+}
+
+/* Button states */
+button {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Loading state */
+.loading {
+  position: relative;
+  color: transparent;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 2px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 2px solid #9333ea;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Result animations */
+#results-container .score-card,
+#results-container .composite-score-item {
+  animation: fadeIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+#results-container .score-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+#results-container .score-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+#results-container .score-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+#results-container .score-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+#results-container .score-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+/* Pentagon chart container */
+#pentagon-chart {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+  }
+
+  header,
+  footer,
+  button {
+    display: none !important;
+  }
+
+  #results-container {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+
+  .bg-gradient-to-r,
+  .bg-gradient-to-br {
+    background: #f9fafb !important;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .likert-scale {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .likert-option > div {
+    padding: 0.75rem;
+  }
+
+  .likert-option > div .text-xs {
+    font-size: 0.625rem;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  /* Add dark mode styles here if desired */
+}
+
+/* Accessibility improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus styles for keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+label:focus-visible {
+  outline: 2px solid #9333ea;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  button,
+  .likert-option > div {
+    border-width: 2px;
+  }
+}

@@ -1,0 +1,132 @@
+questions:
+  - id: 1
+    text: 'I believe in having a good time'
+    subscale: 'fun_belief'
+
+  - id: 2
+    text: 'Fun is a very important part of my life'
+    subscale: 'fun_belief'
+
+  - id: 3
+    text: 'I try to have fun no matter what I am doing'
+    subscale: 'initiative'
+
+  - id: 4
+    text: 'I can make almost any activity fun for me to do'
+    subscale: 'initiative'
+
+  - id: 5
+    text: 'I can find fun in most situations'
+    subscale: 'initiative'
+
+  - id: 6
+    text: 'I am often the person who starts fun things in a situation'
+    subscale: 'initiative'
+
+  - id: 7
+    text: 'I appreciate fun things started by other people'
+    subscale: 'reactivity'
+
+  - id: 8
+    text: "When someone else starts something that is fun, I'm happy to follow along"
+    subscale: 'reactivity'
+
+  - id: 9
+    text: 'I enjoy fun things that other people initiate'
+    subscale: 'reactivity'
+
+  - id: 10
+    text: "If I want to do something, I usually don't let what other people may think stop me"
+    subscale: 'uninhibitedness'
+
+  - id: 11
+    text: 'Sometimes I can do things without worrying about consequences'
+    subscale: 'uninhibitedness'
+
+  - id: 12
+    text: 'I understand social rules but most of the time I am not restricted by them'
+    subscale: 'uninhibitedness'
+
+  - id: 13
+    text: "I don't fear losing anything by being silly"
+    subscale: 'uninhibitedness'
+
+  - id: 14
+    text: "I don't always follow rules"
+    subscale: 'uninhibitedness'
+
+  - id: 15
+    text: 'I often do unplanned things'
+    subscale: 'spontaneity'
+
+  - id: 16
+    text: 'I often do things on the spur of the moment'
+    subscale: 'spontaneity'
+
+  - id: 17
+    text: 'I often act upon my impulses'
+    subscale: 'spontaneity'
+
+  - id: 18
+    text: 'I often follow my spur-of-the-moment feelings'
+    subscale: 'spontaneity'
+
+  - id: 19
+    text: 'I often pursue my spur-of-the-moment thoughts'
+    subscale: 'spontaneity'
+
+subscales:
+  fun_belief:
+    name: 'Fun Belief'
+    description: 'A deeply-held belief that prioritizes fun, pleasure, and enjoyment in life'
+    questions: [1, 2]
+    parent: 'fun_seeking_motivation'
+
+  initiative:
+    name: 'Initiative'
+    description: 'Actively creating fun activities'
+    questions: [3, 4, 5, 6]
+    parent: 'fun_seeking_motivation'
+
+  reactivity:
+    name: 'Reactivity'
+    description: 'Being responsive to fun stimuli'
+    questions: [7, 8, 9]
+    parent: 'fun_seeking_motivation'
+
+  uninhibitedness:
+    name: 'Uninhibitedness'
+    description: "The ability to liberate one's mindset and invoke a sense of freedom"
+    questions: [10, 11, 12, 13, 14]
+    parent: null
+
+  spontaneity:
+    name: 'Spontaneity'
+    description: 'The mental propensity to respond promptly without deep thought'
+    questions: [15, 16, 17, 18, 19]
+    parent: null
+
+composite_scores:
+  fun_seeking_motivation:
+    name: 'Fun-seeking Motivation'
+    description: 'Intrinsic motivational style driving fun-seeking behavior'
+    components: ['fun_belief', 'initiative', 'reactivity']
+
+  playfulness:
+    name: 'Overall Playfulness'
+    description: 'Overall playfulness trait score'
+    components: ['fun_seeking_motivation', 'uninhibitedness', 'spontaneity']
+
+likert_scale:
+  - value: 1
+    label: 'Strongly Disagree'
+  - value: 2
+    label: 'Moderately Disagree'
+  - value: 3
+    label: 'Slightly Disagree'
+  - value: 4
+    label: 'Slightly Agree'
+  - value: 5
+    label: 'Moderately Agree'
+  - value: 6
+    label: 'Strongly Agree'

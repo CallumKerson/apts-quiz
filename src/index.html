@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adult Playfulness Trait Scale (APTS) Quiz</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js for pentagon visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="./static/styles.css" />
+
+    <!-- Meta tags -->
+    <meta
+      name="description"
+      content="Take the Adult Playfulness Trait Scale quiz to measure your playfulness across five dimensions"
+    />
+    <meta name="keywords" content="APTS, playfulness, psychology, assessment, quiz" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='50%25' x='50%25' text-anchor='middle' font-size='60'%3E🎈%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-purple-100">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <span class="text-3xl">🎈</span>
+            <h1 class="text-xl font-semibold text-gray-800">APTS Quiz</h1>
+          </div>
+          <nav>
+            <button
+              id="restart-btn"
+              class="text-sm text-purple-600 hover:text-purple-800 transition-colors hidden"
+            >
+              Start Over
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="bg-white rounded-lg shadow-lg p-8 mb-8">
+          <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">
+              Welcome to the Adult Playfulness Trait Scale
+            </h2>
+            <p class="text-lg text-gray-600 mb-6">
+              This quiz measures your playfulness across five dimensions. It takes about 5-10 minutes to
+              complete.
+            </p>
+          </div>
+
+          <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-8">
+            <h3 class="font-semibold text-purple-900 mb-3">Instructions:</h3>
+            <ul class="space-y-2 text-purple-800">
+              <li class="flex items-start">
+                <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Answer all 19 questions honestly based on your typical behavior</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>There are no right or wrong answers</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Your responses are not saved - this is completely anonymous</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="text-center">
+            <button
+              id="start-quiz-btn"
+              class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors transform hover:scale-105 transition-transform"
+            >
+              Start Quiz
+            </button>
+          </div>
+        </div>
+
+        <!-- Quiz Pages -->
+        <div id="quiz-container" class="hidden">
+          <!-- Progress Bar -->
+          <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-700">Progress</span>
+              <span class="text-sm font-medium text-gray-700">
+                <span id="current-page">1</span> of <span id="total-pages">5</span> sections
+              </span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+              <div
+                id="progress-bar"
+                class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-300"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Question Pages -->
+          <div id="question-pages" class="bg-white rounded-lg shadow-lg p-8">
+            <!-- Pages will be dynamically inserted here -->
+          </div>
+
+          <!-- Navigation -->
+          <div class="flex justify-between mt-6">
+            <button
+              id="prev-btn"
+              class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <button
+              id="next-btn"
+              class="bg-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+            <button
+              id="submit-btn"
+              class="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors hidden"
+            >
+              View Results
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-container" class="hidden">
+          <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Your Playfulness Profile</h2>
+
+            <!-- Overall Score -->
+            <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-6 mb-8">
+              <div class="text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Overall Playfulness Score</h3>
+                <div class="text-5xl font-bold text-purple-600" id="overall-score">--</div>
+                <p class="text-gray-600 mt-2">out of 6.0</p>
+              </div>
+            </div>
+
+            <!-- Pentagon Chart -->
+            <div class="mb-8">
+              <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">
+                  Your Playfulness Pentagon
+                </h3>
+                <div class="max-w-md mx-auto">
+                  <canvas id="pentagon-chart" width="400" height="400"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Scores -->
+            <div class="space-y-6">
+              <h3 class="text-xl font-semibold text-gray-800">Detailed Scores</h3>
+
+              <!-- Subscale Scores -->
+              <div class="grid md:grid-cols-2 gap-4" id="subscale-scores">
+                <!-- Subscale score cards will be inserted here -->
+              </div>
+
+              <!-- Composite Scores -->
+              <div class="mt-8">
+                <h4 class="text-lg font-semibold text-gray-800 mb-4">Composite Scores</h4>
+                <div class="space-y-3" id="composite-scores">
+                  <!-- Composite score items will be inserted here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                id="download-results-btn"
+                class="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+              >
+                Download Results
+              </button>
+              <button
+                id="retake-quiz-btn"
+                class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+              >
+                Take Quiz Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question Page Template -->
+      <template id="question-page-template">
+        <div class="question-page" data-page="{page_number}" data-subscale="{subscale_key}">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">{subscale_name}</h2>
+          <p class="text-gray-600 mb-8">{subscale_description}</p>
+
+          <div class="space-y-8">
+            <!-- Questions will be inserted here -->
+          </div>
+        </div>
+      </template>
+
+      <!-- Question Template -->
+      <template id="question-template">
+        <div class="question-item bg-gray-50 rounded-lg p-6" data-question-id="{question_id}">
+          <p class="text-lg font-medium text-gray-800 mb-4">{question_text}</p>
+
+          <div class="likert-scale grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <!-- Likert options will be inserted here -->
+          </div>
+        </div>
+      </template>
+
+      <!-- Likert Option Template -->
+      <template id="likert-option-template">
+        <label class="likert-option relative cursor-pointer">
+          <input
+            type="radio"
+            name="question_{question_id}"
+            value="{value}"
+            class="sr-only peer"
+            data-question-id="{question_id}"
+          />
+          <div
+            class="border-2 border-gray-300 rounded-lg p-3 text-center transition-all peer-checked:border-purple-600 peer-checked:bg-purple-50 hover:border-purple-400"
+          >
+            <div class="font-semibold text-lg mb-1">{value}</div>
+            <div class="text-xs text-gray-600">{label}</div>
+          </div>
+        </label>
+      </template>
+
+      <!-- Score Card Template -->
+      <template id="score-card-template">
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <h4 class="font-semibold text-gray-800 mb-1">{name}</h4>
+          <p class="text-sm text-gray-600 mb-2">{description}</p>
+          <div class="flex items-baseline">
+            <span class="text-2xl font-bold text-purple-600">{score}</span>
+            <span class="text-gray-500 ml-1">/ 6.0</span>
+          </div>
+          <div class="mt-2 bg-gray-200 rounded-full h-2">
+            <div
+              class="bg-purple-600 h-2 rounded-full transition-all duration-500"
+              style="width: {percentage}%"
+            ></div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Composite Score Template -->
+      <template id="composite-score-template">
+        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="font-semibold text-purple-900">{name}</h4>
+              <p class="text-sm text-purple-700">{description}</p>
+            </div>
+            <div class="text-right">
+              <span class="text-2xl font-bold text-purple-600">{score}</span>
+              <span class="text-purple-500">/ 6.0</span>
+            </div>
+          </div>
+        </div>
+      </template>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 text-center text-sm text-gray-600">
+      <div class="container mx-auto px-4">
+        <p>Based on the Adult Playfulness Trait Scale (APTS) by Dr. Xiangyou Shen</p>
+        <p class="mt-2">
+          <a
+            href="https://github.com/YOUR_USERNAME/apts-quiz"
+            class="text-purple-600 hover:text-purple-800 transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on GitHub
+          </a>
+        </p>
+      </div>
+    </footer>
+
+    <!-- Initialize quiz configuration -->
+    <script>
+      {{ quiz_config | safe }}
+    </script>
+
+    <!-- Custom JavaScript -->
+    <script type="module" src="./static/quiz.js"></script>
+  </body>
+</html>

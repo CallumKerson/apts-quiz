@@ -1,0 +1,93 @@
+<!-- This template is included in quiz.html and populated via JavaScript -->
+<div class="bg-white rounded-lg shadow-lg p-8">
+  <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Your Playfulness Profile</h2>
+
+  <!-- Overall Score -->
+  <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-6 mb-8">
+    <div class="text-center">
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">Overall Playfulness Score</h3>
+      <div class="text-5xl font-bold text-purple-600" id="overall-score">--</div>
+      <p class="text-gray-600 mt-2">out of 6.0</p>
+    </div>
+  </div>
+
+  <!-- Pentagon Chart -->
+  <div class="mb-8">
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">
+        Your Playfulness Pentagon
+      </h3>
+      <div class="max-w-md mx-auto">
+        <canvas id="pentagon-chart" width="400" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Scores -->
+  <div class="space-y-6">
+    <h3 class="text-xl font-semibold text-gray-800">Detailed Scores</h3>
+
+    <!-- Subscale Scores -->
+    <div class="grid md:grid-cols-2 gap-4" id="subscale-scores">
+      <!-- Subscale score cards will be inserted here -->
+    </div>
+
+    <!-- Composite Scores -->
+    <div class="mt-8">
+      <h4 class="text-lg font-semibold text-gray-800 mb-4">Composite Scores</h4>
+      <div class="space-y-3" id="composite-scores">
+        <!-- Composite score items will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+    <button
+      id="download-results-btn"
+      class="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+    >
+      Download Results
+    </button>
+    <button
+      id="retake-quiz-btn"
+      class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+    >
+      Take Quiz Again
+    </button>
+  </div>
+</div>
+
+<!-- Score Card Template -->
+<template id="score-card-template">
+  <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+    <h4 class="font-semibold text-gray-800 mb-1">{name}</h4>
+    <p class="text-sm text-gray-600 mb-2">{description}</p>
+    <div class="flex items-baseline">
+      <span class="text-2xl font-bold text-purple-600">{score}</span>
+      <span class="text-gray-500 ml-1">/ 6.0</span>
+    </div>
+    <div class="mt-2 bg-gray-200 rounded-full h-2">
+      <div
+        class="bg-purple-600 h-2 rounded-full transition-all duration-500"
+        style="width: {percentage}%"
+      ></div>
+    </div>
+  </div>
+</template>
+
+<!-- Composite Score Template -->
+<template id="composite-score-template">
+  <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <h4 class="font-semibold text-purple-900">{name}</h4>
+        <p class="text-sm text-purple-700">{description}</p>
+      </div>
+      <div class="text-right">
+        <span class="text-2xl font-bold text-purple-600">{score}</span>
+        <span class="text-purple-500">/ 6.0</span>
+      </div>
+    </div>
+  </div>
+</template>
