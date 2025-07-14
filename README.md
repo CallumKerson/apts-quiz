@@ -6,16 +6,18 @@ An interactive web-based implementation of the Adult Playfulness Trait Scale (AP
 
 - 🎈 **19-question assessment** measuring adult playfulness across five dimensions
 - 📱 **Mobile-responsive design** with intuitive paginated interface
-- 📊 **Interactive visualizations** including pentagon radar chart
+- 📊 **Interactive visualizations** including pentagon radar chart and progress tracking
+- 📄 **PDF export functionality** for comprehensive quiz results
 - ⚡ **Fast and modern** - built with Vite for optimal performance
 - 🔒 **Privacy-focused** - completely client-side, no data storage
+- 💾 **State persistence** - automatically saves progress in browser storage
 - 🎨 **Beautiful UI** - styled with Tailwind CSS
 
 ## Development
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+ (managed with Volta)
 - npm
 
 ### Setup
@@ -71,12 +73,15 @@ vite.config.js          # Vite configuration with YAML data plugin
 
 ### Technology Stack
 
-- **[Vite](https://vite.dev/)** - Modern build tool with fast HMR
+- **[Vite](https://vite.dev/)** - Modern build tool with fast HMR and custom YAML plugin
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
 - **[Chart.js](https://www.chartjs.org/)** - Interactive charts and graphs
+- **[jsPDF](https://github.com/parallax/jsPDF)** - Client-side PDF generation
+- **[html2canvas](https://html2canvas.hertzen.com/)** - HTML to canvas rendering for PDF export
 - **[js-yaml](https://github.com/nodeca/js-yaml)** - YAML data processing
 - **[Jest](https://jestjs.io/)** - JavaScript testing framework
 - **[ESLint](https://eslint.org/) + [Prettier](https://prettier.io/)** - Code quality tools
+- **[Volta](https://volta.sh/)** - Node.js version management
 
 ### Testing
 
@@ -88,17 +93,16 @@ npm run test:watch       # Run tests in watch mode
 Tests validate:
 
 - YAML data structure integrity
-- Scoring calculation logic
-- Question assignment consistency
-- End-to-end quiz flow simulation
+- Vite build process functionality
+- Configuration and setup verification
 
 ### Deployment
 
-The project automatically deploys to GitHub Pages when pushing to the main branch. The GitHub Actions workflow:
+The project automatically deploys to GitHub Pages when pushing to the main branch. The GitHub Actions workflow uses Volta for Node.js version management and:
 
 1. Runs linting and tests
-2. Builds the production bundle with Vite
-3. Deploys to GitHub Pages
+2. Builds the production bundle with Vite (includes custom YAML plugin)
+3. Deploys to GitHub Pages with proper base path configuration
 
 ## Contributing
 
