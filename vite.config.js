@@ -100,6 +100,7 @@ function transformToAPTSConfig(data) {
 }
 
 export default defineConfig({
+  base: '/apts-quiz/',
   root: 'src',
   build: {
     outDir: '../dist',
