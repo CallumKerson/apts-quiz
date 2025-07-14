@@ -3,6 +3,10 @@
  * Handles all client-side functionality for the quiz
  */
 
+// Import PDF generation libraries
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 // Global state management
 const QuizState = {
   currentPage: 0,
@@ -357,9 +361,9 @@ const QuizController = {
   },
 
   // Download results
-  downloadResults() {
+  async downloadResults() {
     const scores = ScoreCalculator.calculateAllScores(QuizState.responses);
-    ResultsExporter.downloadResults(scores);
+    await PDFGenerator.generatePDF(scores);
   },
 };
 
@@ -639,69 +643,186 @@ const ResultsRenderer = {
   },
 };
 
-// Results Exporter
-const ResultsExporter = {
-  // Download results as text file
-  downloadResults(scores) {
-    const content = this.generateResultsText(scores);
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+// PDF Generation functionality
+const PDFGenerator = {
+  async generatePDF(scores) {
+    try {
+      // Create PDF document
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.width;
+      const pageHeight = pdf.internal.pageSize.height;
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `APTS_Results_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  },
+      // Add title
+      pdf.setFontSize(20);
+      pdf.setTextColor(147, 51, 234);
+      pdf.text('APTS Quiz Results', pageWidth / 2, 25, { align: 'center' });
 
-  // Generate results text
-  generateResultsText(scores) {
-    let text = 'ADULT PLAYFULNESS TRAIT SCALE (APTS) RESULTS\n';
-    text += '='.repeat(50) + '\n\n';
+      // Add subtitle
+      pdf.setFontSize(12);
+      pdf.setTextColor(100, 100, 100);
+      pdf.text('Adult Playfulness Trait Scale Assessment', pageWidth / 2, 35, { align: 'center' });
 
-    // Date
-    text += `Date: ${new Date().toLocaleString()}\n`;
-    if (scores.completionTime) {
-      text += `Completion Time: ${scores.completionTime.formatted}\n`;
-    }
-    text += '\n';
+      // Add overall score
+      pdf.setFontSize(16);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text('Overall Playfulness Score', 20, 55);
+      pdf.setFontSize(24);
+      pdf.setTextColor(147, 51, 234);
+      pdf.text(`${scores.composites.playfulness.score.toFixed(2)} / 6.00`, 20, 70);
 
-    // Overall score
-    text += 'OVERALL PLAYFULNESS SCORE\n';
-    text += '-'.repeat(30) + '\n';
-    text += `${scores.composites.playfulness.score.toFixed(2)} / 6.00\n\n`;
+      // Capture pentagon chart
+      const pentagonCanvas = document.getElementById('pentagon-chart');
+      if (pentagonCanvas) {
+        const chartImage = await html2canvas(pentagonCanvas, {
+          backgroundColor: '#f9fafb',
+          scale: 2,
+        });
 
-    // Composite scores
-    text += 'COMPOSITE SCORES\n';
-    text += '-'.repeat(30) + '\n';
-    text += `Fun-seeking Motivation: ${scores.composites.fun_seeking_motivation.score.toFixed(2)} / 6.00\n\n`;
-
-    // Subscale scores
-    text += 'SUBSCALE SCORES\n';
-    text += '-'.repeat(30) + '\n';
-    Object.entries(scores.subscales).forEach(([, data]) => {
-      text += `${data.name}: ${data.score.toFixed(2)} / 6.00\n`;
-      text += `  ${data.description}\n\n`;
-    });
-
-    // Individual responses
-    text += '\nINDIVIDUAL RESPONSES\n';
-    text += '-'.repeat(30) + '\n';
-    Object.entries(scores.responses).forEach(([questionId, response]) => {
-      const question = APTS_CONFIG.questions[questionId];
-      if (question) {
-        text += `Q${questionId}: ${question.text}\n`;
-        text += `  Response: ${response} - ${APTS_CONFIG.likertScale[response - 1].label}\n\n`;
+        // Add chart to PDF
+        const chartDataURL = chartImage.toDataURL('image/png');
+        const chartWidth = 80;
+        const chartHeight = (chartImage.height / chartImage.width) * chartWidth;
+        pdf.addImage(
+          chartDataURL,
+          'PNG',
+          (pageWidth - chartWidth) / 2,
+          85,
+          chartWidth,
+          chartHeight
+        );
       }
-    });
 
-    // Footer
-    text += '\n' + '-'.repeat(50) + '\n';
-    text += 'Based on the Adult Playfulness Trait Scale (APTS) by Dr. Xiangyou Shen\n';
+      // Add subscale scores
+      let yPos = 180;
+      pdf.setFontSize(14);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text('Detailed Subscale Scores', 20, yPos);
+      yPos += 15;
 
-    return text;
+      Object.entries(scores.subscales).forEach(([_key, data]) => {
+        if (yPos > pageHeight - 30) {
+          pdf.addPage();
+          yPos = 20;
+        }
+
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(data.name, 20, yPos);
+        pdf.setTextColor(147, 51, 234);
+        pdf.text(`${data.score.toFixed(2)} / 6.00`, pageWidth - 30, yPos, { align: 'right' });
+
+        yPos += 8;
+        pdf.setFontSize(10);
+        pdf.setTextColor(100, 100, 100);
+        const description = pdf.splitTextToSize(data.description, pageWidth - 40);
+        pdf.text(description, 20, yPos);
+        yPos += description.length * 4 + 8;
+      });
+
+      // Add composite scores
+      if (yPos > pageHeight - 60) {
+        pdf.addPage();
+        yPos = 20;
+      }
+
+      yPos += 10;
+      pdf.setFontSize(14);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text('Composite Scores', 20, yPos);
+      yPos += 15;
+
+      Object.entries(scores.composites).forEach(([_key, data]) => {
+        if (yPos > pageHeight - 30) {
+          pdf.addPage();
+          yPos = 20;
+        }
+
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(data.name, 20, yPos);
+        pdf.setTextColor(147, 51, 234);
+        pdf.text(`${data.score.toFixed(2)} / 6.00`, pageWidth - 30, yPos, { align: 'right' });
+
+        yPos += 8;
+        pdf.setFontSize(10);
+        pdf.setTextColor(100, 100, 100);
+        const description = pdf.splitTextToSize(data.description, pageWidth - 40);
+        pdf.text(description, 20, yPos);
+        yPos += description.length * 4 + 8;
+      });
+
+      // Add questions and answers section
+      if (yPos > pageHeight - 40) {
+        pdf.addPage();
+        yPos = 20;
+      }
+
+      yPos += 15;
+      pdf.setFontSize(16);
+      pdf.setTextColor(147, 51, 234);
+      pdf.text('Questions and Answers', pageWidth / 2, yPos, { align: 'center' });
+      yPos += 15;
+
+      // Group questions by subscale
+      Object.entries(APTS_CONFIG.subscales).forEach(([_subscaleKey, subscale]) => {
+        if (yPos > pageHeight - 50) {
+          pdf.addPage();
+          yPos = 20;
+        }
+
+        // Subscale header
+        pdf.setFontSize(14);
+        pdf.setTextColor(147, 51, 234);
+        pdf.text(subscale.name, 20, yPos);
+        yPos += 12;
+
+        // Questions for this subscale
+        subscale.questions.forEach((questionId) => {
+          const question = APTS_CONFIG.questions[questionId];
+          const response = scores.responses[questionId];
+
+          if (!question || response === undefined) return;
+
+          if (yPos > pageHeight - 25) {
+            pdf.addPage();
+            yPos = 20;
+          }
+
+          // Question text
+          pdf.setFontSize(10);
+          pdf.setTextColor(0, 0, 0);
+          const questionText = pdf.splitTextToSize(
+            `Q${questionId}: ${question.text}`,
+            pageWidth - 40
+          );
+          pdf.text(questionText, 20, yPos);
+          yPos += questionText.length * 4 + 3;
+
+          // Answer
+          pdf.setTextColor(147, 51, 234);
+          const answerLabel = APTS_CONFIG.likertScale[response - 1]?.label || `Score: ${response}`;
+          pdf.text(`Answer: ${response} - ${answerLabel}`, 25, yPos);
+          yPos += 8;
+        });
+
+        yPos += 5;
+      });
+
+      // Add footer
+      pdf.setFontSize(8);
+      pdf.setTextColor(100, 100, 100);
+      pdf.text('Generated by APTS Quiz Application', pageWidth / 2, pageHeight - 10, {
+        align: 'center',
+      });
+      pdf.text(new Date().toLocaleDateString(), pageWidth / 2, pageHeight - 5, { align: 'center' });
+
+      // Save PDF
+      const timestamp = new Date().toISOString().split('T')[0];
+      pdf.save(`APTS-Results-${timestamp}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      window.alert('Error generating PDF. Please try again.');
+    }
   },
 };
 
